@@ -8,8 +8,14 @@ vi.setConfig({ sequence: { shuffle: false } });
 const account_id = process.env.KEYGEN_ACCOUNT_ID;
 const user_email = process.env.KEYGEN_ACCOUNT_EMAIL;
 const user_password = process.env.KEYGEN_ACCOUNT_PASSWORD;
+const keygen_mode = process.env.KEYGEN_MODE || 'multiplayer'; // default to multiplayer
 
-const keygen = new Keygen({ account_id, ignore_ssl: true, singleplayer: true });
+const keygen = new Keygen({ 
+  account_id, 
+  ignore_ssl: true, 
+  singleplayer: keygen_mode === 'singleplayer' 
+});
+
 let token = null;
 let product = null;
 let paid_policy = null;

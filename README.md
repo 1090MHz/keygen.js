@@ -101,7 +101,7 @@ This let's you check license keys client side, like in an Electron app, without 
 
 ## API
 
-The `Keygen.js` API provides a simple to manage your Keygen service.
+The `Keygen.js` API provides a simple way to manage your Keygen service.
 
 ```javascript
 new Keygen({
@@ -109,6 +109,7 @@ new Keygen({
   base_url: "https://api.keygen.localhost",
   ignore_ssl: false,
   machine_id: "...",
+  singleplayer: false,
 });
 
 ```
@@ -120,6 +121,7 @@ The `account_id` config is required, everything else is optional.
 * **`base_url`** `<string>`: Endpoint for Keygen server. Defaults to `https://api.keygen.localhost`
 * **`ignore_ssl`** `<bool>`: Ignore SSL errors. Useful in development, don't use in production! Defaults to `false`.
 * **`machine_id`** `<string>`: Unique ID to use for identifying the machine. Defaults to internally generated value.
+* **`singleplayer`** `<bool>`: Enable singleplayer mode for self-hosted single-tenant deployments. Defaults to `false` (multiplayer mode).
 
 ### Methods
 
