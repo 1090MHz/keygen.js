@@ -10,6 +10,9 @@ export default class Keygen {
         this.config = config;
         this.base_url = config.base_url || "https://api.keygen.localhost";
         this.ignore_ssl = config.ignore_ssl || false;
+        
+        // Support for singleplayer mode
+        this.singleplayer = config.singleplayer || false;
 
         this.account_id = config.account_id;
         if (!this.account_id) throw new Error("Missing account_id");
@@ -115,7 +118,13 @@ export default class Keygen {
     }
 
     url(path) {
-        return `${this.base_url}/v1/accounts/${this.account_id}/${path}`;
+        if (this.singleplayer) {
+            // In singleplayer mode, endpoints are at /v1/{endpoint}
+            return `${this.base_url}/v1/${path}`;
+        } else {
+            // In multiplayer mode, endpoints are at /v1/accounts/{account_id}/{endpoint}
+            return `${this.base_url}/v1/accounts/${this.account_id}/${path}`;
+        }
     }
 
     async fetch({ endpoint, api_key = null, body = null, method = "POST", auth = "Bearer" } = {}) {
@@ -170,4 +179,14 @@ Keygen.PAID_POLICY = {
     "maxMachines": 5,
     "floating": true,
     "machineUniquenessStrategy": "UNIQUE_PER_POLICY"
+};
+
+// Convenience method for singleplayer instances
+Keygen.singleplayer = function(config = {}) {
+    return new Keygen({ ...config, singleplayer: true });
+};
+
+// Convenience method for multiplayer instances  
+Keygen.multiplayer = function(config = {}) {
+    return new Keygen({ ...config, singleplayer: false });
 };
