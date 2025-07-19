@@ -8,7 +8,14 @@ import nodeMachineId from "node-machine-id";
 export default class Keygen {
     constructor(config = {}) {
         this.config = config;
-        this.base_url = config.base_url || "https://api.keygen.localhost";
+        
+        // Handle singleplayer mode URL configuration
+        if (config.singleplayer === true) {
+            this.base_url = config.base_url || "https://api.keygen.localhost";
+        } else {
+            this.base_url = config.base_url || "https://api.keygen.sh";
+        }
+        
         this.ignore_ssl = config.ignore_ssl || false;
 
         this.account_id = config.account_id;
@@ -115,7 +122,11 @@ export default class Keygen {
     }
 
     url(path) {
-        return `${this.base_url}/v1/accounts/${this.account_id}/${path}`;
+        if (this.config.singleplayer === true) {
+            return `${this.base_url}/v1/${path}`;
+        } else {
+            return `${this.base_url}/v1/accounts/${this.account_id}/${path}`;
+        }
     }
 
     async fetch({ endpoint, api_key = null, body = null, method = "POST", auth = "Bearer" } = {}) {
@@ -170,4 +181,25 @@ Keygen.PAID_POLICY = {
     "maxMachines": 5,
     "floating": true,
     "machineUniquenessStrategy": "UNIQUE_PER_POLICY"
+};
+
+Keygen.FREE_POLICY = {
+    "name": "Free Policy",
+    "duration": null,
+    "maxMachines": 1,
+    "floating": false,
+    "machineUniquenessStrategy": "UNIQUE_PER_POLICY"
+};
+
+// Convenience methods for common workflows
+Keygen.createWorkflowPaid = function(config) {
+    return new Keygen(config);
+};
+
+Keygen.createWorkflowFree = function(config) {
+    return new Keygen(config);
+};
+
+Keygen.singleplayer = function(config = {}) {
+    return new Keygen({ ...config, singleplayer: true });
 };
