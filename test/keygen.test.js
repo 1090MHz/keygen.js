@@ -21,6 +21,45 @@ test("init", function () {
     expect(keygen.account_id).toBe(account_id);
 });
 
+test("convenience method - Keygen.singleplayer()", function () {
+    const singleplayerKeygen = Keygen.singleplayer({ 
+        account_id, 
+        base_url: "https://api.keygen.localhost",
+        ignore_ssl: true
+    });
+    
+    expect(singleplayerKeygen).toBeInstanceOf(Keygen);
+    expect(singleplayerKeygen.account_id).toBe(account_id);
+    expect(singleplayerKeygen.config.singleplayer).toBe(true);
+    expect(singleplayerKeygen.base_url).toBe("https://api.keygen.localhost");
+});
+
+test("convenience method - constructor with singleplayer: true", function () {
+    const singleplayerKeygen = new Keygen({ 
+        account_id, 
+        base_url: "https://api.keygen.localhost",
+        ignore_ssl: true,
+        singleplayer: true
+    });
+    
+    expect(singleplayerKeygen).toBeInstanceOf(Keygen);
+    expect(singleplayerKeygen.account_id).toBe(account_id);
+    expect(singleplayerKeygen.config.singleplayer).toBe(true);
+    expect(singleplayerKeygen.base_url).toBe("https://api.keygen.localhost");
+});
+
+test("URL generation - singleplayer vs multiplayer", function () {
+    const multiplayerKeygen = new Keygen({ account_id, singleplayer: false });
+    const singleplayerKeygen = Keygen.singleplayer({ account_id });
+    
+    const multiplayerUrl = multiplayerKeygen.url("products");
+    const singleplayerUrl = singleplayerKeygen.url("products");
+    
+    expect(multiplayerUrl).toContain(`/accounts/${account_id}/products`);
+    expect(singleplayerUrl).toBe(`${singleplayerKeygen.base_url}/v1/products`);
+    expect(singleplayerUrl).not.toContain("/accounts/");
+});
+
 test("create token", async function () {
     token = await keygen.createToken(user_email, user_password);
     expect(token).toBeInstanceOf(Object);
