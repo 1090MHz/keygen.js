@@ -9,7 +9,7 @@ const account_id = process.env.KEYGEN_ACCOUNT_ID;
 const user_email = process.env.KEYGEN_ACCOUNT_EMAIL;
 const user_password = process.env.KEYGEN_ACCOUNT_PASSWORD;
 
-const keygen = new Keygen({ account_id, ignore_ssl: true });
+const keygen = new Keygen({ account_id, ignore_ssl: true, singleplayer: true });
 let token = null;
 let product = null;
 let paid_policy = null;

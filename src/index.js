@@ -8,11 +8,15 @@ import nodeMachineId from "node-machine-id";
 export default class Keygen {
     constructor(config = {}) {
         this.config = config;
-        this.base_url = config.base_url || "https://api.keygen.localhost";
-        this.ignore_ssl = config.ignore_ssl || false;
         
-        // Support for singleplayer mode
-        this.singleplayer = config.singleplayer || false;
+        // Handle singleplayer mode URL configuration
+        if (config.singleplayer === true) {
+            this.base_url = config.base_url || "https://api.keygen.localhost";
+        } else {
+            this.base_url = config.base_url || "https://api.keygen.sh";
+        }
+        
+        this.ignore_ssl = config.ignore_ssl || false;
 
         this.account_id = config.account_id;
         if (!this.account_id) throw new Error("Missing account_id");
@@ -118,11 +122,9 @@ export default class Keygen {
     }
 
     url(path) {
-        if (this.singleplayer) {
-            // In singleplayer mode, endpoints are at /v1/{endpoint}
+        if (this.config.singleplayer === true) {
             return `${this.base_url}/v1/${path}`;
         } else {
-            // In multiplayer mode, endpoints are at /v1/accounts/{account_id}/{endpoint}
             return `${this.base_url}/v1/accounts/${this.account_id}/${path}`;
         }
     }
@@ -181,12 +183,23 @@ Keygen.PAID_POLICY = {
     "machineUniquenessStrategy": "UNIQUE_PER_POLICY"
 };
 
-// Convenience method for singleplayer instances
-Keygen.singleplayer = function(config = {}) {
-    return new Keygen({ ...config, singleplayer: true });
+Keygen.FREE_POLICY = {
+    "name": "Free Policy",
+    "duration": null,
+    "maxMachines": 1,
+    "floating": false,
+    "machineUniquenessStrategy": "UNIQUE_PER_POLICY"
 };
 
-// Convenience method for multiplayer instances  
-Keygen.multiplayer = function(config = {}) {
-    return new Keygen({ ...config, singleplayer: false });
+// Convenience methods for common workflows
+Keygen.createWorkflowPaid = function(config) {
+    return new Keygen(config);
+};
+
+Keygen.createWorkflowFree = function(config) {
+    return new Keygen(config);
+};
+
+Keygen.singleplayer = function(config = {}) {
+    return new Keygen({ ...config, singleplayer: true });
 };
