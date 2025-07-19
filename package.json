@@ -1,9 +1,9 @@
 {
-    "name": "@themaximalist/keygen.js",
+    "name": "@1090mhz/keygen.js",
     "version": "0.0.5",
     "description": "Node.js Library for keygen.sh",
-    "homepage": "https://github.com/themaximal1st/keygen.js",
-    "repository": "themaximal1st/keygen.js",
+    "homepage": "https://github.com/1090MHz/keygen.js",
+    "repository": "1090MHz/keygen.js",
     "type": "module",
     "main": "src/index.js",
     "scripts": {
